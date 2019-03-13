@@ -12,12 +12,12 @@ const char* ToCString(const String::Utf8Value& value) {
   return *value ? *value : "<string conversion failed>";
 }
 
-int verifyEH(const char *hdr, const std::vector<unsigned char> &soln, const char *personalizationString, unsigned int N, unsigned int K) {
+int verifyEH(const char *hdr, const std::vector<unsigned char> &soln, const char *personalizationString, unsigned int N, unsigned int K, unsigned int hdrSize) {
     // Hash state
     crypto_generichash_blake2b_state state;
     EhInitialiseState(N, K, state, personalizationString);
 
-    crypto_generichash_blake2b_update(&state, (const unsigned char*)hdr, 140);
+    crypto_generichash_blake2b_update(&state, (const unsigned char*)hdr, hdrSize);
 
     bool isValid;
     EhIsValidSolution(N, K, state, soln, isValid);
@@ -29,9 +29,17 @@ void Verify(const v8::FunctionCallbackInfo<Value>& args) {
     Isolate* isolate = Isolate::GetCurrent();
     HandleScope scope(isolate);
 
-    if (args.Length() < 4) {
+    if (args.Length() < 6) {
         isolate->ThrowException(
             Exception::TypeError(String::NewFromUtf8(isolate, "Wrong number of arguments"))
+        );
+
+        return;
+    }
+
+    if (!args[5]->IsInt32()) {
+        isolate->ThrowException(
+            Exception::TypeError(String::NewFromUtf8(isolate, "Sixth parameter should be header size"))
         );
 
         return;
@@ -65,7 +73,8 @@ void Verify(const v8::FunctionCallbackInfo<Value>& args) {
     }
 
     const char *hdr = node::Buffer::Data(header);
-    if(node::Buffer::Length(header) != 140) {
+    const unsigned int hdrSize = args[5].As<Uint32>()->Value();
+    if(node::Buffer::Length(header) != hdrSize) {
         //invalid hdr length
         args.GetReturnValue().Set(false);
         return;
@@ -84,7 +93,8 @@ void Verify(const v8::FunctionCallbackInfo<Value>& args) {
         vecSolution,
         personalizationString,
         args[3].As<Uint32>()->Value(),
-        args[4].As<Uint32>()->Value()
+        args[4].As<Uint32>()->Value(),
+        hdrSize
     );
 
     args.GetReturnValue().Set(result);
