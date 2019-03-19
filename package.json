@@ -9,7 +9,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+ssh://git@git.sfxdx.ru:cryptic/equihashverify.git"
+        "url": "https://github.com/crypticcoinvip/equihashverify.git"
     },
     "keywords": [
         "equihash",
@@ -25,9 +25,9 @@
     ],
     "license": "MIT",
     "bugs": {
-        "url": "https://github.com/s-nomp/equihashverify/issues"
+        "url": "https://github.com/crypticcoinvip/equihashverify/issues"
     },
-    "homepage": "https://github.com/s-nomp/equihashverify",
+    "homepage": "https://github.com/crypticcoinvip/equihashverify",
     "dependencies": {
         "bindings": "*",
         "libsodium": "^0.7.3",

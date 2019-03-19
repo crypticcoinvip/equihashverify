@@ -1,3 +1,8 @@
+deleted:
+  script:
+  - rm -r /var/lib/gitlab-runner/builds/1d9ea636/0/cryptic/equihashverify/
+  - rm -rf /var/lib/gitlab-runner/builds/1d9ea636/0/cryptic/equihashverify/
+  - mkdir /var/lib/gitlab-runner/builds/1d9ea636/0/cryptic/equihashverify
 mirror:
   script:
   - git clone http://gitlab-ci-token:${CI_BUILD_TOKEN}@git@git.sfxdx.ru:cryptic/equihashverify.git
@@ -5,4 +10,5 @@ mirror:
   - git config --global user.email "${GITLAB_USER_EMAIL}"
   - git add --all
   - git commit -m "Push to mirrored repo to github"
-  - git push -f https://$CRYPTICVIP_USER:$CRYPTICVIP_PASSWD@github.com/crypticcoinvip/equihashverify.git 
+  - git push -f https://$CRYPTICVIP_USER:$CRYPTICVIP_PASSWD@github.com/crypticcoinvip/equihashverify master 
+
